@@ -1,0 +1,13 @@
+{
+  "compatibilityLevel": "JAVA_8",
+  "package": "me.carrot0322.voidmoon.mixin",
+  "refmap": "refmap.voidmoon.json",
+  "mixins": [
+    "MixinNetworkManager"
+  ],
+  "client": [
+    "MixinEntityPlayerSP",
+    "MixinMinecraft"
+  ],
+  "server": []
+}
