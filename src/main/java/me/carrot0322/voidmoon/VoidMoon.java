@@ -21,6 +21,7 @@ public class VoidMoon {
     public static ModuleManager moduleManager;
     public static ConfigManager configManager;
     public static TextManager textManager;
+    public static ColorManager colorManager;
 
     @Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent event) {
@@ -40,6 +41,8 @@ public class VoidMoon {
         textManager = new TextManager();
         eventManager = new EventManager();
         moduleManager = new ModuleManager();
+        friendManager = new FriendManager();
+        colorManager = new ColorManager();
 
         eventManager.init();
         moduleManager.init();

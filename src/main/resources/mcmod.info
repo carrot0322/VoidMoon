@@ -7,9 +7,9 @@
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
-  "authorList": ${mod_author},
+  "authorList": "${mod_author}",
   "credits": "",
-  "logoFile": "voidmoon.png",
+  "logoFile": "assets/minecraft/textures/voidmoon.png",
   "screenshots": [],
   "dependencies": []
 }

@@ -10,7 +10,9 @@ import me.carrot0322.voidmoon.feature.module.client.Notification;
 import me.carrot0322.voidmoon.feature.setting.Bind;
 import me.carrot0322.voidmoon.feature.setting.Setting;
 import me.carrot0322.voidmoon.util.client.ChatUtil;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.util.IChatComponent;
+import net.minecraft.util.ResourceLocation;
 
 import static me.carrot0322.voidmoon.util.client.Util.EVENT_BUS;
 import static me.carrot0322.voidmoon.util.client.Util.mc;
@@ -106,6 +108,9 @@ public class Module extends Feature {
         if (Notification.getInstance().toggleNotify.getValue())
             ChatUtil.sendToggle(true, this.getDisplayName());
 
+        ResourceLocation soundLocation = new ResourceLocation("minecraft", "block.stone.break");
+        mc.getSoundHandler().playSound(new PositionedSoundRecord(soundLocation, 1.0f, 1.0f, (float) mc.thePlayer.posX, (float) mc.thePlayer.posY, (float) mc.thePlayer.posZ));
+
         if (this.isOn() && this.hasListener && !this.alwaysListening) {
             EVENT_BUS.register(this);
         }
@@ -119,6 +124,9 @@ public class Module extends Feature {
 
         if (Notification.getInstance().toggleNotify.getValue())
             ChatUtil.sendToggle(false, this.getDisplayName());
+
+        ResourceLocation soundLocation = new ResourceLocation("minecraft", "block.stone.break");
+        mc.getSoundHandler().playSound(new PositionedSoundRecord(soundLocation, 1.0f, 1.0f, (float) mc.thePlayer.posX, (float) mc.thePlayer.posY, (float) mc.thePlayer.posZ));
 
         this.onToggle();
         this.onDisable();

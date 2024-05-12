@@ -6,8 +6,11 @@ import me.carrot0322.voidmoon.VoidMoon;
 import me.carrot0322.voidmoon.event.impl.Render2DEvent;
 import me.carrot0322.voidmoon.event.impl.Render3DEvent;
 import me.carrot0322.voidmoon.feature.Feature;
+import me.carrot0322.voidmoon.feature.gui.VoidMoonGui;
 import me.carrot0322.voidmoon.feature.module.Module;
+import me.carrot0322.voidmoon.feature.module.client.ClickGui;
 import me.carrot0322.voidmoon.feature.module.client.FontMod;
+import me.carrot0322.voidmoon.feature.module.client.Notification;
 import me.carrot0322.voidmoon.util.client.Util;
 import org.lwjgl.input.Keyboard;
 
@@ -43,7 +46,9 @@ public class ModuleManager extends Feature {
         // Exploit
 
         // Client
+        modules.add(new ClickGui());
         modules.add(new FontMod());
+        modules.add(new Notification());
     }
 
     public Module getModuleByName(String name) {
@@ -190,7 +195,7 @@ public class ModuleManager extends Feature {
     }
 
     public void onKeyPressed(int eventKey) {
-        if (eventKey == 0 || !Keyboard.getEventKeyState() || mc.currentScreen instanceof OyVeyGui) {
+        if (eventKey == 0 || !Keyboard.getEventKeyState() || mc.currentScreen instanceof VoidMoonGui) {
             return;
         }
         this.modules.forEach(module -> {
