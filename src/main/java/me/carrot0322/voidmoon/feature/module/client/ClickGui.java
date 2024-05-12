@@ -9,6 +9,7 @@ import me.carrot0322.voidmoon.feature.module.Module;
 import me.carrot0322.voidmoon.feature.setting.Setting;
 import me.carrot0322.voidmoon.util.client.ChatUtil;
 import net.minecraft.client.settings.GameSettings;
+import org.lwjgl.input.Keyboard;
 
 import static me.carrot0322.voidmoon.util.client.Util.mc;
 
@@ -33,6 +34,8 @@ public class ClickGui extends Module {
 
     public ClickGui() {
         super("ClickGui", "yeah awesome", Category.CLIENT, true, false, false);
+        setBind(Keyboard.KEY_Y);
+        setInstance();
     }
 
     private VoidMoonGui click;
@@ -59,8 +62,8 @@ public class ClickGui extends Module {
     public void onSettingChange(ClientEvent event) {
         if (event.getStage() == 2 && event.getSetting().getFeature().equals(this)) {
             if (event.getSetting().equals(this.prefix)) {
-                VoidMoon.commandManager.setPrefix(this.prefix.getPlannedValue());
-                ChatUtil.sendInfo("Prefix set to " + ChatFormatting.DARK_GRAY + VoidMoon.commandManager.getPrefix());
+                //VoidMoon.commandManager.setPrefix(this.prefix.getPlannedValue());
+                //ChatUtil.sendInfo("Prefix set to " + ChatFormatting.DARK_GRAY + VoidMoon.commandManager.getPrefix());
             }
             VoidMoon.colorManager.setColor(this.red.getPlannedValue(), this.green.getPlannedValue(), this.blue.getPlannedValue(), this.hoverAlpha.getPlannedValue());
         }
@@ -74,7 +77,7 @@ public class ClickGui extends Module {
     @Override
     public void onLoad() {
         VoidMoon.colorManager.setColor(this.red.getValue(), this.green.getValue(), this.blue.getValue(), this.hoverAlpha.getValue());
-        VoidMoon.commandManager.setPrefix(this.prefix.getValue());
+        //VoidMoon.commandManager.setPrefix(this.prefix.getValue());
     }
 
     @Override

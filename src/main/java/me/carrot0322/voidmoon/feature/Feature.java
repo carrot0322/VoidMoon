@@ -1,6 +1,7 @@
 package me.carrot0322.voidmoon.feature;
 
 import me.carrot0322.voidmoon.VoidMoon;
+import me.carrot0322.voidmoon.feature.gui.VoidMoonGui;
 import me.carrot0322.voidmoon.feature.module.Module;
 import me.carrot0322.voidmoon.feature.setting.Setting;
 import me.carrot0322.voidmoon.manager.TextManager;
@@ -56,8 +57,8 @@ public class Feature {
     public Setting register(Setting setting) {
         setting.setFeature(this);
         this.settings.add(setting);
-        if (this instanceof Module && mc.currentScreen instanceof OyVeyGui) {
-            OyVeyGui.getInstance().updateModule((Module) this);
+        if (this instanceof Module && mc.currentScreen instanceof VoidMoonGui) {
+            VoidMoonGui.getInstance().updateModule((Module) this);
         }
         return setting;
     }
@@ -71,8 +72,8 @@ public class Feature {
         if (!removeList.isEmpty()) {
             this.settings.removeAll(removeList);
         }
-        if (this instanceof Module && mc.currentScreen instanceof OyVeyGui) {
-            OyVeyGui.getInstance().updateModule((Module) this);
+        if (this instanceof Module && mc.currentScreen instanceof VoidMoonGui) {
+            VoidMoonGui.getInstance().updateModule((Module) this);
         }
     }
 

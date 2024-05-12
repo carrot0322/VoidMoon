@@ -35,6 +35,7 @@ public class EventManager extends Feature {
         VoidMoon.moduleManager.onTick();
     }
 
+    /*
     @Subscribe
     public void onUpdateWalkingPlayer(UpdateWalkingPlayerEvent event) {
         if (fullNullCheck())
@@ -56,7 +57,7 @@ public class EventManager extends Feature {
         if (event.getPacket() instanceof WorldTimeUpdateS2CPacket)
             VoidMoon.serverManager.update();
     }
-
+ */
     @Subscribe
     public void onWorldRender(Render3DEvent event) {
         VoidMoon.moduleManager.onRender3D(event);

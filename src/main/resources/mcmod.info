@@ -9,7 +9,7 @@
   "updateUrl": "",
   "authorList": "${mod_author}",
   "credits": "",
-  "logoFile": "assets/minecraft/textures/voidmoon.png",
+  "logoFile": "voidmoon.png",
   "screenshots": [],
   "dependencies": []
 }

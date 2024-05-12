@@ -10,6 +10,7 @@ import me.carrot0322.voidmoon.feature.gui.VoidMoonGui;
 import me.carrot0322.voidmoon.feature.module.Module;
 import me.carrot0322.voidmoon.feature.module.client.ClickGui;
 import me.carrot0322.voidmoon.feature.module.client.FontMod;
+import me.carrot0322.voidmoon.feature.module.client.Hud;
 import me.carrot0322.voidmoon.feature.module.client.Notification;
 import me.carrot0322.voidmoon.util.client.Util;
 import org.lwjgl.input.Keyboard;
@@ -48,6 +49,7 @@ public class ModuleManager extends Feature {
         // Client
         modules.add(new ClickGui());
         modules.add(new FontMod());
+        modules.add(new Hud());
         modules.add(new Notification());
     }
 
@@ -205,8 +207,7 @@ public class ModuleManager extends Feature {
         });
     }
 
-    private class Animation
-            extends Thread {
+    private class Animation extends Thread {
         public Module module;
         public float offset;
         public float vOffset;
@@ -217,6 +218,7 @@ public class ModuleManager extends Feature {
             this.service = Executors.newSingleThreadScheduledExecutor();
         }
 
+        /*
         @Override
         public void run() {
             if (HUD.getInstance().renderingMode.getValue() == HUD.RenderingMode.Length) {
@@ -264,6 +266,8 @@ public class ModuleManager extends Feature {
                 }
             }
         }
+
+         */
 
         @Override
         public void start() {
