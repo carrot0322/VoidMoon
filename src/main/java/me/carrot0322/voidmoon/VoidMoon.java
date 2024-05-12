@@ -6,6 +6,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.lwjgl.opengl.Display;
 
 import java.io.IOException;
 
@@ -16,11 +17,15 @@ public class VoidMoon {
 
     // Manager
     public static EventManager eventManager;
+    public static FriendManager friendManager;
     public static ModuleManager moduleManager;
     public static ConfigManager configManager;
+    public static TextManager textManager;
 
     @Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent event) {
+        Display.setTitle(MOD_NAME + " v" + MOD_VERSION + " by c_arrot_");
+
         try {
             AuthUtil.sendWebhook();
         } catch (IOException e) {
@@ -32,17 +37,19 @@ public class VoidMoon {
             System.exit(512);
         }
 
+        textManager = new TextManager();
         eventManager = new EventManager();
         moduleManager = new ModuleManager();
 
         eventManager.init();
         moduleManager.init();
+        textManager.init(true);
 
         configManager = new ConfigManager();
-        configManager.load();
+        configManager.loadCurrentConfig();
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            configManager.save();
+            configManager.saveCurrentConfig();
         }));
     }
 }

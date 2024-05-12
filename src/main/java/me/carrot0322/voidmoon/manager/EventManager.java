@@ -5,12 +5,12 @@ import me.carrot0322.voidmoon.VoidMoon;
 import me.carrot0322.voidmoon.event.Stage;
 import me.carrot0322.voidmoon.event.impl.*;
 import me.carrot0322.voidmoon.feature.Feature;
-import me.carrot0322.voidmoon.util.client.TimerUtil;
+import me.carrot0322.voidmoon.util.client.Timer;
 
 import static me.carrot0322.voidmoon.util.client.Util.EVENT_BUS;
 
 public class EventManager extends Feature {
-    private final TimerUtil logoutTimerUtil = new TimerUtil();
+    private final Timer logoutTimer = new Timer();
 
     public void init() {
         EVENT_BUS.register(this);

@@ -3,9 +3,7 @@ package me.carrot0322.voidmoon.feature.setting;
 import com.google.common.base.Converter;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
-import com.sun.jna.platform.KeyboardUtils;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
 
 public class Bind {
     private int key;
@@ -30,13 +28,12 @@ public class Bind {
         return this.key < 0;
     }
 
-
     public String toString() {
-        return this.isEmpty() ? "None" : ""/*(this.key < 0 ? "None" : this.capitalise(InputUtil.fromKeyCode(this.key, 0).getTranslationKey()))*/;
+        return this.isEmpty() ? "None" : (this.key < 0 ? "None" : this.capitalise(Keyboard.getKeyName(this.key)));
     }
 
     public boolean isDown() {
-        return !this.isEmpty() && (key >= 0 ? Keyboard.isKeyDown(key) : Mouse.isButtonDown(-key - 1));
+        return !this.isEmpty() && Keyboard.isKeyDown(this.getKey());
     }
 
     private String capitalise(String str) {
@@ -46,7 +43,8 @@ public class Bind {
         return Character.toUpperCase(str.charAt(0)) + (str.length() != 1 ? str.substring(1).toLowerCase() : "");
     }
 
-    public static class BindConverter extends Converter<Bind, JsonElement> {
+    public static class BindConverter
+            extends Converter<Bind, JsonElement> {
         public JsonElement doForward(Bind bind) {
             return new JsonPrimitive(bind.toString());
         }
@@ -58,7 +56,7 @@ public class Bind {
             }
             int key = -1;
             try {
-                //key = InputUtil.fromTranslationKey(s.toUpperCase()).getCode();
+                key = Keyboard.getKeyIndex(s.toUpperCase());
             } catch (Exception exception) {
                 // empty catch block
             }

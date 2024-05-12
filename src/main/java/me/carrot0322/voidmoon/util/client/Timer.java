@@ -1,6 +1,6 @@
 package me.carrot0322.voidmoon.util.client;
 
-public class TimerUtil {
+public class Timer {
     private long time = -1L;
 
     public boolean every(long ms) {

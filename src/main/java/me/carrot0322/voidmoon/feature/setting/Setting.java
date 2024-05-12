@@ -116,10 +116,6 @@ public class Setting<T> {
         }
     }
 
-    public void reset() {
-        setValue(getDefaultValue());
-    }
-
     public T getPlannedValue() {
         return this.plannedValue;
     }

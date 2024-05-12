@@ -1,41 +1,49 @@
 package me.carrot0322.voidmoon.manager;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.common.eventbus.EventBus;
+import com.mojang.realmsclient.gui.ChatFormatting;
+import me.carrot0322.voidmoon.VoidMoon;
+import me.carrot0322.voidmoon.event.impl.Render2DEvent;
+import me.carrot0322.voidmoon.event.impl.Render3DEvent;
 import me.carrot0322.voidmoon.feature.Feature;
 import me.carrot0322.voidmoon.feature.module.Module;
-import me.carrot0322.voidmoon.util.client.Jsonable;
+import me.carrot0322.voidmoon.feature.module.client.FontMod;
+import me.carrot0322.voidmoon.util.client.Util;
+import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static me.carrot0322.voidmoon.util.client.Util.EVENT_BUS;
 import static me.carrot0322.voidmoon.util.client.Util.mc;
 
-public class ModuleManager implements Jsonable {
-    public List<Module> modules = new ArrayList<>();
-    public List<Module> sortedModules = new ArrayList<>();
-    public List<String> sortedModulesABC = new ArrayList<>();
+public class ModuleManager extends Feature {
+    public ArrayList<Module> modules = new ArrayList();
+    public List<Module> sortedModules = new ArrayList<Module>();
+    public List<String> sortedModulesABC = new ArrayList<String>();
+    public Animation animationThread;
 
     public void init() {
-        // Module Init
-        // COMBAT
-        //modules.add(new Aura());
+        // Combat
 
-        // MOVEMENT
+        // Movement
 
-        // RENDER
+        // Player
 
-        // MISC
+        // Render
 
-        // CLIENT
+        // Misc
 
-        // EXPLOIT
+        // Exploit
 
-        // LEGIT
+        // Client
+        modules.add(new FontMod());
     }
 
     public Module getModuleByName(String name) {
@@ -56,38 +64,30 @@ public class ModuleManager implements Jsonable {
 
     public void enableModule(Class<Module> clazz) {
         Module module = this.getModuleByClass(clazz);
-        if (module != null)
+        if (module != null) {
             module.enable();
+        }
     }
 
     public void disableModule(Class<Module> clazz) {
         Module module = this.getModuleByClass(clazz);
-        if (module != null)
+        if (module != null) {
             module.disable();
-    }
-
-    public void toggleModule(Class<Module> clazz) {
-        Module module = this.getModuleByClass(clazz);
-        if(module != null)
-            module.toggle();
+        }
     }
 
     public void enableModule(String name) {
         Module module = this.getModuleByName(name);
-        if (module != null)
+        if (module != null) {
             module.enable();
+        }
     }
 
     public void disableModule(String name) {
         Module module = this.getModuleByName(name);
-        if (module != null)
+        if (module != null) {
             module.disable();
-    }
-
-    public void toggleModule(String name) {
-        Module module = this.getModuleByName(name);
-        if(module != null)
-            module.toggle();
+        }
     }
 
     public boolean isModuleEnabled(String name) {
@@ -100,17 +100,6 @@ public class ModuleManager implements Jsonable {
         return module != null && module.isOn();
     }
 
-    private Module moduleToBind;
-
-    public void setModuleToBind(Module moduleToBind) {
-        this.moduleToBind = moduleToBind;
-    }
-
-
-    public ArrayList<Module> getAllModules() {
-        return new ArrayList<>(this.modules);
-    }
-
     public Module getModuleByDisplayName(String displayName) {
         for (Module module : this.modules) {
             if (!module.getDisplayName().equalsIgnoreCase(displayName)) continue;
@@ -120,7 +109,7 @@ public class ModuleManager implements Jsonable {
     }
 
     public ArrayList<Module> getEnabledModules() {
-        ArrayList<Module> enabledModules = new ArrayList<>();
+        ArrayList<Module> enabledModules = new ArrayList<Module>();
         for (Module module : this.modules) {
             if (!module.isEnabled()) continue;
             enabledModules.add(module);
@@ -129,7 +118,7 @@ public class ModuleManager implements Jsonable {
     }
 
     public ArrayList<String> getEnabledModulesName() {
-        ArrayList<String> enabledModules = new ArrayList<>();
+        ArrayList<String> enabledModules = new ArrayList<String>();
         for (Module module : this.modules) {
             if (!module.isEnabled() || !module.isDrawn()) continue;
             enabledModules.add(module.getFullArrayString());
@@ -152,7 +141,7 @@ public class ModuleManager implements Jsonable {
     }
 
     public void onLoad() {
-        this.modules.stream().filter(Module::listening).forEach(EVENT_BUS::register);
+        this.modules.stream().filter(Module::listening).forEach(((EventBus) EVENT_BUS)::register);
         this.modules.forEach(Module::onLoad);
     }
 
@@ -173,14 +162,20 @@ public class ModuleManager implements Jsonable {
     }
 
     public void sortModules(boolean reverse) {
-        this.sortedModules = this.getEnabledModules().stream().filter(Module::isDrawn)
-                .sorted(Comparator.comparing(module -> mc.fontRendererObj.getStringWidth(module.getFullArrayString()) * (reverse ? -1 : 1)))
-                .collect(Collectors.toList());
+        this.sortedModules = this.getEnabledModules().stream().filter(Module::isDrawn).sorted(Comparator.comparing(module -> this.renderer.getStringWidth(module.getFullArrayString()) * (reverse ? -1 : 1))).collect(Collectors.toList());
     }
 
     public void sortModulesABC() {
-        this.sortedModulesABC = new ArrayList<>(this.getEnabledModulesName());
+        this.sortedModulesABC = new ArrayList<String>(this.getEnabledModulesName());
         this.sortedModulesABC.sort(String.CASE_INSENSITIVE_ORDER);
+    }
+
+    public void onLogout() {
+        this.modules.forEach(Module::onLogout);
+    }
+
+    public void onLogin() {
+        this.modules.forEach(Module::onLogin);
     }
 
     public void onUnload() {
@@ -195,40 +190,80 @@ public class ModuleManager implements Jsonable {
     }
 
     public void onKeyPressed(int eventKey) {
-        if (eventKey == -1 || eventKey == 0 || mc.currentScreen instanceof me.coolmint.ngm.features.gui.ClickGui) {
+        if (eventKey == 0 || !Keyboard.getEventKeyState() || mc.currentScreen instanceof OyVeyGui) {
             return;
         }
-        modules.forEach(module -> {
-            if (module.getBind().getKey() == eventKey)
+        this.modules.forEach(module -> {
+            if (module.getBind().getKey() == eventKey) {
                 module.toggle();
+            }
         });
     }
 
-    public void onKeyReleased(int eventKey) {
-        if (eventKey == -1 || eventKey == 0 || mc.currentScreen instanceof me.coolmint.ngm.features.gui.ClickGui)
-            return;
+    private class Animation
+            extends Thread {
+        public Module module;
+        public float offset;
+        public float vOffset;
+        ScheduledExecutorService service;
 
-        modules.forEach(module -> {
-            //if (module.getBind().getKey() == eventKey && module.getBind().isHold())
-            //module.disable();
-        });
-    }
-
-    @Override public JsonElement toJson() {
-        JsonObject object = new JsonObject();
-        for (Module module : modules) {
-            object.add(module.getName(), module.toJson());
+        public Animation() {
+            super("Animation");
+            this.service = Executors.newSingleThreadScheduledExecutor();
         }
-        return object;
-    }
 
-    @Override public void fromJson(JsonElement element) {
-        for (Module module : modules) {
-            module.fromJson(element.getAsJsonObject().get(module.getName()));
+        @Override
+        public void run() {
+            if (HUD.getInstance().renderingMode.getValue() == HUD.RenderingMode.Length) {
+                for (Module module : ModuleManager.this.sortedModules) {
+                    String text = module.getDisplayName() + ChatFormatting.GRAY + (module.getDisplayInfo() != null ? " [" + ChatFormatting.WHITE + module.getDisplayInfo() + ChatFormatting.GRAY + "]" : "");
+                    module.offset = (float) ModuleManager.this.renderer.getStringWidth(text) / HUD.getInstance().animationHorizontalTime.getValue().floatValue();
+                    module.vOffset = (float) ModuleManager.this.renderer.getFontHeight() / HUD.getInstance().animationVerticalTime.getValue().floatValue();
+                    if (module.isEnabled() && HUD.getInstance().animationHorizontalTime.getValue() != 1) {
+                        if (!(module.arrayListOffset > module.offset) || Util.mc.theWorld == null) continue;
+                        module.arrayListOffset -= module.offset;
+                        module.sliding = true;
+                        continue;
+                    }
+                    if (!module.isDisabled() || HUD.getInstance().animationHorizontalTime.getValue() == 1) continue;
+                    if (module.arrayListOffset < (float) ModuleManager.this.renderer.getStringWidth(text) && Util.mc.theWorld != null) {
+                        module.arrayListOffset += module.offset;
+                        module.sliding = true;
+                        continue;
+                    }
+                    module.sliding = false;
+                }
+            } else {
+                for (String e : ModuleManager.this.sortedModulesABC) {
+                    Module module = VoidMoon.moduleManager.getModuleByName(e);
+                    String text = module.getDisplayName() + ChatFormatting.GRAY + (module.getDisplayInfo() != null ? " [" + ChatFormatting.WHITE + module.getDisplayInfo() + ChatFormatting.GRAY + "]" : "");
+                    module.offset = (float) ModuleManager.this.renderer.getStringWidth(text) / HUD.getInstance().animationHorizontalTime.getValue().floatValue();
+                    module.vOffset = (float) ModuleManager.this.renderer.getFontHeight() / HUD.getInstance().animationVerticalTime.getValue().floatValue();
+
+                    if (module.isEnabled() && HUD.getInstance().animationHorizontalTime.getValue() != 1) {
+                        if (!(module.arrayListOffset > module.offset) || Util.mc.theWorld == null) continue;
+                        module.arrayListOffset -= module.offset;
+                        module.sliding = true;
+                        continue;
+                    }
+
+                    if (!module.isDisabled() || HUD.getInstance().animationHorizontalTime.getValue() == 1) continue;
+
+                    if (module.arrayListOffset < (float) ModuleManager.this.renderer.getStringWidth(text) && Util.mc.theWorld != null) {
+                        module.arrayListOffset += module.offset;
+                        module.sliding = true;
+                        continue;
+                    }
+
+                    module.sliding = false;
+                }
+            }
         }
-    }
 
-    @Override public String getFileName() {
-        return "modules.json";
+        @Override
+        public void start() {
+            System.out.println("Starting animation thread.");
+            this.service.scheduleAtFixedRate(this, 0L, 1L, TimeUnit.MILLISECONDS);
+        }
     }
 }

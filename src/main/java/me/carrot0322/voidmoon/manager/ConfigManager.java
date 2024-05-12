@@ -1,89 +1,240 @@
 package me.carrot0322.voidmoon.manager;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
+import com.google.gson.*;
 import me.carrot0322.voidmoon.VoidMoon;
 import me.carrot0322.voidmoon.feature.Feature;
+import me.carrot0322.voidmoon.feature.module.Module;
 import me.carrot0322.voidmoon.feature.setting.Bind;
 import me.carrot0322.voidmoon.feature.setting.EnumConverter;
 import me.carrot0322.voidmoon.feature.setting.Setting;
 import me.carrot0322.voidmoon.util.client.Jsonable;
 
+import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static me.carrot0322.voidmoon.util.client.Util.mc;
 
 public class ConfigManager {
-    public static final Path NGM_PATH = mc.mcDataDir.toPath().resolve("VoidMoon");
-    public static final Gson gson = new GsonBuilder()
-            .setLenient()
-            .setPrettyPrinting()
-            .create();
-    public final List<Jsonable> jsonables = List.of(Ngm.friendManager, Ngm.moduleManager);
+    public ArrayList<Feature> features = new ArrayList<>();
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    public String config = "VoidMoon/config/";
+
     public static void setValueFromJson(Feature feature, Setting setting, JsonElement element) {
         String str;
         switch (setting.getType()) {
-            case "Boolean" -> {
-                setting.setValue(element.getAsBoolean());
-            }
-            case "Double" -> {
-                setting.setValue(element.getAsDouble());
-            }
-            case "Float" -> {
-                setting.setValue(element.getAsFloat());
-            }
-            case "Integer" -> {
-                setting.setValue(element.getAsInt());
-            }
-            case "String" -> {
+            case "Boolean":
+                setting.setValue(Boolean.valueOf(element.getAsBoolean()));
+                return;
+            case "Double":
+                setting.setValue(Double.valueOf(element.getAsDouble()));
+                return;
+            case "Float":
+                setting.setValue(Float.valueOf(element.getAsFloat()));
+                return;
+            case "Integer":
+                setting.setValue(Integer.valueOf(element.getAsInt()));
+                return;
+            case "String":
                 str = element.getAsString();
                 setting.setValue(str.replace("_", " "));
-            }
-            case "Bind" -> {
-                setting.setValue(new Bind(element.getAsInt()));
-            }
-            case "Enum" -> {
+                return;
+            case "Bind":
+                setting.setValue((new Bind.BindConverter()).doBackward(element));
+                return;
+            case "Enum":
                 try {
                     EnumConverter converter = new EnumConverter(((Enum) setting.getValue()).getClass());
                     Enum value = converter.doBackward(element);
                     setting.setValue((value == null) ? setting.getDefaultValue() : value);
                 } catch (Exception exception) {
                 }
+                return;
+        }
+        VoidMoon.logger.error("Unknown Setting type for: " + feature.getName() + " : " + setting.getName());
+    }
+
+    private static void loadFile(JsonObject input, Feature feature) {
+        for (Map.Entry<String, JsonElement> entry : input.entrySet()) {
+            String settingName = entry.getKey();
+            JsonElement element = entry.getValue();
+            if (feature instanceof FriendManager) {
+                try {
+                    VoidMoon.friendManager.addFriend(new FriendManager.Friend(element.getAsString(), UUID.fromString(settingName)));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                continue;
             }
-            default -> {
-                VoidMoon.logger.error("Unknown Setting type for: " + feature.getName() + " : " + setting.getName());
+            boolean settingFound = false;
+            for (Setting setting : feature.getSettings()) {
+                if (settingName.equals(setting.getName())) {
+                    try {
+                        setValueFromJson(feature, setting, element);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    settingFound = true;
+                }
             }
+            if (settingFound) ;
         }
     }
 
-    public void load() {
-        if (!NGM_PATH.toFile().exists()) NGM_PATH.toFile().mkdirs();
-
-        for (Jsonable jsonable : jsonables) {
+    public void loadConfig(String name) {
+        final List<File> files = Arrays.stream(Objects.requireNonNull(new File("VoidMoon").listFiles())).filter(File::isDirectory).collect(Collectors.toList());
+        if (files.contains(new File("VoidMoon/" + name + "/"))) {
+            this.config = "VoidMoon/" + name + "/";
+        } else {
+            this.config = "VoidMoon/config/";
+        }
+        VoidMoon.friendManager.onLoad();
+        for (Feature feature : this.features) {
             try {
-                String read = Files.readString(NGM_PATH.resolve(jsonable.getFileName()));
-                jsonable.fromJson(JsonParser.parseString(read));
-            } catch (Throwable ignored) {
+                loadSettings(feature);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+        }
+        saveCurrentConfig();
+    }
+
+    public boolean configExists(String name) {
+        final List<File> files = Arrays.stream(Objects.requireNonNull(new File("VoidMoon").listFiles())).filter(File::isDirectory).collect(Collectors.toList());
+        return files.contains(new File("VoidMoon/" + name + "/"));
+    }
+
+    public void saveConfig(String name) {
+        this.config = "VoidMoon/" + name + "/";
+        File path = new File(this.config);
+        if (!path.exists())
+            path.mkdir();
+        VoidMoon.friendManager.saveFriends();
+        for (Feature feature : this.features) {
+            try {
+                saveSettings(feature);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        saveCurrentConfig();
+    }
+
+    public void saveCurrentConfig() {
+        File currentConfig = new File("VoidMoon/currentconfig.txt");
+        try {
+            if (currentConfig.exists()) {
+                FileWriter writer = new FileWriter(currentConfig);
+                String tempConfig = this.config.replaceAll("/", "");
+                writer.write(tempConfig.replaceAll("VoidMoon", ""));
+                writer.close();
+            } else {
+                currentConfig.createNewFile();
+                FileWriter writer = new FileWriter(currentConfig);
+                String tempConfig = this.config.replaceAll("/", "");
+                writer.write(tempConfig.replaceAll("VoidMoon", ""));
+                writer.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    public void save() {
-        if (!NGM_PATH.toFile().exists()) NGM_PATH.toFile().mkdirs();
-        // 켜두면 버그나는 모듈 끄기
-        //if(Ngm.moduleManager.isModuleEnabled("ClickGui")) Ngm.moduleManager.disableModule("ClickGui");
+    public String loadCurrentConfig() {
+        File currentConfig = new File("VoidMoon/currentconfig.txt");
+        String name = "config";
+        try {
+            if (currentConfig.exists()) {
+                Scanner reader = new Scanner(currentConfig);
+                while (reader.hasNextLine())
+                    name = reader.nextLine();
+                reader.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return name;
+    }
 
-        for (Jsonable jsonable : jsonables) {
+    public void resetConfig(boolean saveConfig, String name) {
+        for (Feature feature : this.features)
+            feature.reset();
+        if (saveConfig)
+            saveConfig(name);
+    }
+
+    public void saveSettings(Feature feature) throws IOException {
+        JsonObject object = new JsonObject();
+        File directory = new File(this.config + getDirectory(feature));
+        if (!directory.exists())
+            directory.mkdir();
+        String featureName = this.config + getDirectory(feature) + feature.getName() + ".json";
+        Path outputFile = Paths.get(featureName);
+        if (!Files.exists(outputFile))
+            Files.createFile(outputFile);
+        Gson gson = (new GsonBuilder()).setPrettyPrinting().create();
+        String json = gson.toJson(writeSettings(feature));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(outputFile)));
+        writer.write(json);
+        writer.close();
+    }
+
+    public void init() {
+        this.features.addAll(VoidMoon.moduleManager.modules);
+        this.features.add(VoidMoon.friendManager);
+        String name = loadCurrentConfig();
+        loadConfig(name);
+        VoidMoon.logger.info("Config loaded.");
+    }
+
+    private void loadSettings(Feature feature) throws IOException {
+        String featureName = this.config + getDirectory(feature) + feature.getName() + ".json";
+        Path featurePath = Paths.get(featureName);
+        if (!Files.exists(featurePath))
+            return;
+        loadPath(featurePath, feature);
+    }
+
+    private void loadPath(Path path, Feature feature) throws IOException {
+        InputStream stream = Files.newInputStream(path);
+        try {
+            loadFile((new JsonParser()).parse(new InputStreamReader(stream)).getAsJsonObject(), feature);
+        } catch (IllegalStateException e) {
+            VoidMoon.logger.error("Bad Config File for: " + feature.getName() + ". Resetting...");
+            loadFile(new JsonObject(), feature);
+        }
+        stream.close();
+    }
+
+    public JsonObject writeSettings(Feature feature) {
+        JsonObject object = new JsonObject();
+        JsonParser jp = new JsonParser();
+        for (Setting setting : feature.getSettings()) {
+            if (setting.isEnumSetting()) {
+                EnumConverter converter = new EnumConverter(((Enum) setting.getValue()).getClass());
+                object.add(setting.getName(), converter.doForward((Enum) setting.getValue()));
+                continue;
+            }
+            if (setting.isStringSetting()) {
+                String str = (String) setting.getValue();
+                setting.setValue(str.replace(" ", "_"));
+            }
             try {
-                JsonElement json = jsonable.toJson();
-                Files.writeString(NGM_PATH.resolve(jsonable.getFileName()), gson.toJson(json)); // 파일 쓰기
-            } catch (Throwable e) {
-                Ngm.LOGGER.error(e);
+                object.add(setting.getName(), jp.parse(setting.getValueAsString()));
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
+        return object;
+    }
+
+    public String getDirectory(Feature feature) {
+        String directory = "";
+        if (feature instanceof Module)
+            directory = directory + ((Module) feature).getCategory().getName() + "/";
+        return directory;
     }
 }
