@@ -47,7 +47,7 @@ public class EventManager extends Feature {
     @Subscribe
     public void onChatSent(ChatEvent event) {
         if (event.getMsg().startsWith(Command.getCommandPrefix())) {
-            event.cancel();
+            event.setCancel(true);
             try {
                 mc.ingameGUI.getChatGUI().addToSentMessages(event.getMsg());
                 if (event.getMsg().length() > 1) {

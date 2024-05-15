@@ -197,13 +197,12 @@ public class ModuleManager extends Feature {
     }
 
     public void onKeyPressed(int eventKey) {
-        if (eventKey == 0 || !Keyboard.getEventKeyState() || mc.currentScreen instanceof VoidMoonGui) {
+        if (eventKey == -1 || eventKey == 0 || mc.currentScreen instanceof VoidMoonGui)
             return;
-        }
+
         this.modules.forEach(module -> {
-            if (module.getBind().getKey() == eventKey) {
+            if (module.getBind().getKey() == eventKey)
                 module.toggle();
-            }
         });
     }
 
