@@ -181,4 +181,8 @@ public class PlayerUtil {
             return this.name;
         }
     }
+
+    public static boolean isMoving() {
+        return mc.thePlayer.movementInput.moveForward != 0.0 || mc.thePlayer.movementInput.moveStrafe != 0.0;
+    }
 }

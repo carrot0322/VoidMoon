@@ -3,6 +3,7 @@ package me.carrot0322.voidmoon.feature.module.movement;
 import me.carrot0322.voidmoon.feature.module.Module;
 import me.carrot0322.voidmoon.feature.module.client.ClickGui;
 import me.carrot0322.voidmoon.feature.setting.Setting;
+import me.carrot0322.voidmoon.util.player.PlayerUtil;
 
 import static me.carrot0322.voidmoon.util.client.Util.mc;
 
@@ -38,10 +39,6 @@ public class Sprint extends Module {
         mc.thePlayer.setSprinting(false);
     }
 
-    public static boolean isMoving() {
-        return mc.thePlayer.movementInput.moveForward != 0.0 || mc.thePlayer.movementInput.moveStrafe != 0.0;
-    }
-
     @Override
     public void onUpdate() {
         if (nullCheck()) return;
@@ -49,6 +46,6 @@ public class Sprint extends Module {
         if(mode.getValue() == modes.Rage)
             mc.thePlayer.setSprinting(true);
         else
-            mc.thePlayer.setSprinting(mc.thePlayer.getFoodStats().getFoodLevel() > 6 && !mc.thePlayer.isCollidedHorizontally & !(mc.thePlayer.movementInput.moveForward < 0.1) && isMoving() && !mc.thePlayer.isBlocking());
+            mc.thePlayer.setSprinting(mc.thePlayer.getFoodStats().getFoodLevel() > 6 && !mc.thePlayer.isCollidedHorizontally & !(mc.thePlayer.movementInput.moveForward < 0.1) && PlayerUtil.isMoving() && !mc.thePlayer.isBlocking());
     }
 }
