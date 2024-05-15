@@ -12,6 +12,7 @@ import me.carrot0322.voidmoon.feature.module.client.ClickGui;
 import me.carrot0322.voidmoon.feature.module.client.FontMod;
 import me.carrot0322.voidmoon.feature.module.client.Hud;
 import me.carrot0322.voidmoon.feature.module.client.Notification;
+import me.carrot0322.voidmoon.feature.module.movement.Sprint;
 import me.carrot0322.voidmoon.util.client.Util;
 import org.lwjgl.input.Keyboard;
 
@@ -37,7 +38,7 @@ public class ModuleManager extends Feature {
         // Combat
 
         // Movement
-
+        modules.add(new Sprint());
         // Player
 
         // Render
