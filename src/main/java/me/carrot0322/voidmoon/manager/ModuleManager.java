@@ -11,6 +11,7 @@ import me.carrot0322.voidmoon.feature.module.client.FontMod;
 import me.carrot0322.voidmoon.feature.module.client.Hud;
 import me.carrot0322.voidmoon.feature.module.client.Notification;
 import me.carrot0322.voidmoon.feature.module.exploit.Plugin;
+import me.carrot0322.voidmoon.feature.module.movement.Flight;
 import me.carrot0322.voidmoon.feature.module.movement.SlimeFly;
 import me.carrot0322.voidmoon.feature.module.movement.Sprint;
 
@@ -36,6 +37,7 @@ public class ModuleManager extends Feature {
         // Combat
 
         // Movement
+        modules.add(new Flight());
         modules.add(new SlimeFly());
         modules.add(new Sprint());
 
