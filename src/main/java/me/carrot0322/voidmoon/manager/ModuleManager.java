@@ -10,6 +10,7 @@ import me.carrot0322.voidmoon.feature.module.client.ClickGui;
 import me.carrot0322.voidmoon.feature.module.client.FontMod;
 import me.carrot0322.voidmoon.feature.module.client.Hud;
 import me.carrot0322.voidmoon.feature.module.client.Notification;
+import me.carrot0322.voidmoon.feature.module.exploit.Plugin;
 import me.carrot0322.voidmoon.feature.module.movement.SlimeFly;
 import me.carrot0322.voidmoon.feature.module.movement.Sprint;
 
@@ -45,6 +46,7 @@ public class ModuleManager extends Feature {
         // Misc
 
         // Exploit
+        modules.add(new Plugin());
 
         // Client
         modules.add(new ClickGui());
