@@ -21,8 +21,30 @@ public class FontMod extends Module {
         this.setInstance();
     }
 
-    private static FontMod INSTANCE = new FontMod();
     private boolean reloadFont = false;
+
+    @Subscribe
+    public void onSettingChange(ClientEvent event) {
+        Setting setting;
+        if (event.getStage() == 2 && (setting = event.getSetting()) != null && setting.getFeature().equals(this)) {
+            if (setting.getName().equals("FontName") && !FontMod.checkFont(setting.getPlannedValue().toString(), false)) {
+                ChatUtil.sendError("That font doesnt exist.");
+                event.cancel();
+                return;
+            }
+            this.reloadFont = true;
+        }
+    }
+
+    @Override
+    public void onTick() {
+        if (this.reloadFont) {
+            VoidMoon.textManager.init(false);
+            this.reloadFont = false;
+        }
+    }
+
+    private static FontMod INSTANCE = new FontMod();
 
     public static FontMod getInstance() {
         if (INSTANCE == null) {
@@ -45,26 +67,5 @@ public class FontMod extends Module {
 
     private void setInstance() {
         INSTANCE = this;
-    }
-
-    @Subscribe
-    public void onSettingChange(ClientEvent event) {
-        Setting setting;
-        if (event.getStage() == 2 && (setting = event.getSetting()) != null && setting.getFeature().equals(this)) {
-            if (setting.getName().equals("FontName") && !FontMod.checkFont(setting.getPlannedValue().toString(), false)) {
-                ChatUtil.sendError("That font doesnt exist.");
-                event.cancel();
-                return;
-            }
-            this.reloadFont = true;
-        }
-    }
-
-    @Override
-    public void onTick() {
-        if (this.reloadFont) {
-            VoidMoon.textManager.init(false);
-            this.reloadFont = false;
-        }
     }
 }

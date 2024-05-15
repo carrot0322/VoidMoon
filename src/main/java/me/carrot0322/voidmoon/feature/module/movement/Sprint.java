@@ -20,18 +20,6 @@ public class Sprint extends Module {
         setInstance();
     }
 
-    private static Sprint INSTANCE = new Sprint();
-
-    public static Sprint getInstance() {
-        if (INSTANCE == null)
-            INSTANCE = new Sprint();
-        return INSTANCE;
-    }
-
-    private void setInstance() {
-        INSTANCE = this;
-    }
-
     @Override
     public void onDisable() {
         if (nullCheck()) return;
@@ -47,5 +35,17 @@ public class Sprint extends Module {
             mc.thePlayer.setSprinting(true);
         else
             mc.thePlayer.setSprinting(mc.thePlayer.getFoodStats().getFoodLevel() > 6 && !mc.thePlayer.isCollidedHorizontally & !(mc.thePlayer.movementInput.moveForward < 0.1) && PlayerUtil.isMoving() && !mc.thePlayer.isBlocking());
+    }
+
+    private static Sprint INSTANCE = new Sprint();
+
+    public static Sprint getInstance() {
+        if (INSTANCE == null)
+            INSTANCE = new Sprint();
+        return INSTANCE;
+    }
+
+    private void setInstance() {
+        INSTANCE = this;
     }
 }

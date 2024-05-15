@@ -21,6 +21,4 @@ public class Hud extends Module {
     private void setInstance() {
         INSTANCE = this;
     }
-
-
 }

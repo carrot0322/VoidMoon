@@ -34,17 +34,6 @@ public class ClickGui extends Module {
     }
 
     private VoidMoonGui click;
-    private static ClickGui INSTANCE = new ClickGui();
-
-    public static ClickGui getInstance() {
-        if (INSTANCE == null)
-            INSTANCE = new ClickGui();
-        return INSTANCE;
-    }
-
-    private void setInstance() {
-        INSTANCE = this;
-    }
 
     @Subscribe
     public void onSettingChange(ClientEvent event) {
@@ -73,5 +62,17 @@ public class ClickGui extends Module {
         if (!(mc.currentScreen instanceof VoidMoonGui)) {
             this.disable();
         }
+    }
+
+    private static ClickGui INSTANCE = new ClickGui();
+
+    public static ClickGui getInstance() {
+        if (INSTANCE == null)
+            INSTANCE = new ClickGui();
+        return INSTANCE;
+    }
+
+    private void setInstance() {
+        INSTANCE = this;
     }
 }
