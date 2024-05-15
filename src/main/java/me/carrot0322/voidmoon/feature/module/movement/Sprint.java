@@ -35,6 +35,6 @@ public class Sprint extends Module {
         if(mode.getValue() == modes.Rage)
             mc.thePlayer.setSprinting(true);
         else
-            mc.thePlayer.setSprinting(mc.thePlayer.getFoodStats().getFoodLevel() > 6 && !mc.thePlayer.isCollidedHorizontally & !(mc.thePlayer.movementInput.moveForward < 0.1) && isMoving());
+            mc.thePlayer.setSprinting(mc.thePlayer.getFoodStats().getFoodLevel() > 6 && !mc.thePlayer.isCollidedHorizontally & !(mc.thePlayer.movementInput.moveForward < 0.1) && isMoving() && !mc.thePlayer.isBlocking());
     }
 }
