@@ -4,6 +4,7 @@ import com.google.gson.*;
 import me.carrot0322.voidmoon.VoidMoon;
 import me.carrot0322.voidmoon.feature.Feature;
 import me.carrot0322.voidmoon.feature.module.Module;
+import me.carrot0322.voidmoon.feature.module.client.ClickGui;
 import me.carrot0322.voidmoon.feature.setting.Bind;
 import me.carrot0322.voidmoon.feature.setting.EnumConverter;
 import me.carrot0322.voidmoon.feature.setting.Setting;
@@ -21,7 +22,7 @@ import static me.carrot0322.voidmoon.util.client.Util.mc;
 public class ConfigManager {
     public ArrayList<Feature> features = new ArrayList<>();
 
-    public String config = "VoidMoon/config/";
+    public String config = "VoidMoon/" + loadCurrentConfig() + "/";
     public static final Path PATH = mc.mcDataDir.toPath().resolve("VoidMoon");
 
     public static void setValueFromJson(Feature feature, Setting setting, JsonElement element) {
@@ -114,6 +115,9 @@ public class ConfigManager {
 
     public void saveConfig(String name) {
         if (!PATH.toFile().exists()) PATH.toFile().mkdirs();
+
+        // disable some modules
+        ClickGui.getInstance().disable();
 
         this.config = "VoidMoon/" + name + "/";
         File path = new File(this.config);
