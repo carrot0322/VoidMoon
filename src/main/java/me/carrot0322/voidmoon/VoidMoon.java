@@ -51,10 +51,10 @@ public class VoidMoon {
         textManager.init(true);
 
         configManager = new ConfigManager();
-        configManager.loadCurrentConfig();
+        configManager.loadConfig(configManager.loadCurrentConfig());
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            configManager.saveCurrentConfig();
+            configManager.saveConfig(configManager.loadCurrentConfig());
         }));
     }
 }

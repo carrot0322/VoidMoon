@@ -22,6 +22,7 @@ public class ConfigManager {
     public ArrayList<Feature> features = new ArrayList<>();
 
     public String config = "VoidMoon/config/";
+    public static final Path PATH = mc.mcDataDir.toPath().resolve("VoidMoon");
 
     public static void setValueFromJson(Feature feature, Setting setting, JsonElement element) {
         String str;
@@ -58,6 +59,8 @@ public class ConfigManager {
     }
 
     private static void loadFile(JsonObject input, Feature feature) {
+        if (!PATH.toFile().exists()) PATH.toFile().mkdirs();
+
         for (Map.Entry<String, JsonElement> entry : input.entrySet()) {
             String settingName = entry.getKey();
             JsonElement element = entry.getValue();
@@ -85,6 +88,8 @@ public class ConfigManager {
     }
 
     public void loadConfig(String name) {
+        if (!PATH.toFile().exists()) PATH.toFile().mkdirs();
+
         final List<File> files = Arrays.stream(Objects.requireNonNull(new File("VoidMoon").listFiles())).filter(File::isDirectory).collect(Collectors.toList());
         if (files.contains(new File("VoidMoon/" + name + "/"))) {
             this.config = "VoidMoon/" + name + "/";
@@ -108,6 +113,8 @@ public class ConfigManager {
     }
 
     public void saveConfig(String name) {
+        if (!PATH.toFile().exists()) PATH.toFile().mkdirs();
+
         this.config = "VoidMoon/" + name + "/";
         File path = new File(this.config);
         if (!path.exists())
@@ -124,6 +131,8 @@ public class ConfigManager {
     }
 
     public void saveCurrentConfig() {
+        if (!PATH.toFile().exists()) PATH.toFile().mkdirs();
+
         File currentConfig = new File("VoidMoon/currentconfig.txt");
         try {
             if (currentConfig.exists()) {
