@@ -10,7 +10,7 @@ import static me.carrot0322.voidmoon.util.client.Util.mc;
 
 public class ChatUtil {
     public static String MsgPrefix(){
-        return ChatFormatting.WHITE + "[" + ChatFormatting.GREEN + VoidMoon.MOD_NAME + ChatFormatting.WHITE + "]" + ChatFormatting.RESET + " ";
+        return ChatFormatting.WHITE + "[" + ChatFormatting.LIGHT_PURPLE + VoidMoon.MOD_NAME + ChatFormatting.WHITE + "]" + ChatFormatting.RESET + " ";
     }
 
     public static void sendInfo(String message) {
