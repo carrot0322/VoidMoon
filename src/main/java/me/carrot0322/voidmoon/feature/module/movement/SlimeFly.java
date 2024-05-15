@@ -3,6 +3,7 @@ package me.carrot0322.voidmoon.feature.module.movement;
 import me.carrot0322.voidmoon.feature.module.Module;
 import me.carrot0322.voidmoon.feature.setting.Setting;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.BlockPos;
 
 import static me.carrot0322.voidmoon.util.client.Util.mc;
 
@@ -19,7 +20,7 @@ public class SlimeFly extends Module {
         if(nullCheck())
             return;
 
-        if(!mc.theWorld.getBlockState(mc.thePlayer.getPosition().down()).getBlock().equals(Blocks.slime_block))
+        if(!mc.theWorld.getBlockState(new BlockPos(mc.thePlayer).down()).getBlock().equals(Blocks.slime_block))
             return;
 
         if(!mc.gameSettings.keyBindJump.isPressed() && !mc.thePlayer.onGround && !mc.thePlayer.movementInput.jump && mc.thePlayer.motionY <= 0.0 && mc.thePlayer.fallDistance <= 1.0f)
