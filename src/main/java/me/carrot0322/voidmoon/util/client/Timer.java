@@ -49,4 +49,19 @@ public class Timer {
     public long getMs(long time) {
         return time / 1000000L;
     }
+
+    //Tick Timer
+    public int tick;
+
+    public void tickUpdate() {
+        tick++;
+    }
+
+    public void tickReset() {
+        tick = 0;
+    }
+
+    public boolean passedTick(final int ticks) {
+        return tick >= ticks;
+    }
 }

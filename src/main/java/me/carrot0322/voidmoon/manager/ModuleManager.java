@@ -1,8 +1,6 @@
 package me.carrot0322.voidmoon.manager;
 
 import com.google.common.eventbus.EventBus;
-import com.mojang.realmsclient.gui.ChatFormatting;
-import me.carrot0322.voidmoon.VoidMoon;
 import me.carrot0322.voidmoon.event.impl.Render2DEvent;
 import me.carrot0322.voidmoon.event.impl.Render3DEvent;
 import me.carrot0322.voidmoon.feature.Feature;
@@ -14,8 +12,6 @@ import me.carrot0322.voidmoon.feature.module.client.Hud;
 import me.carrot0322.voidmoon.feature.module.client.Notification;
 import me.carrot0322.voidmoon.feature.module.movement.SlimeFly;
 import me.carrot0322.voidmoon.feature.module.movement.Sprint;
-import me.carrot0322.voidmoon.util.client.Util;
-import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
 import java.util.Arrays;

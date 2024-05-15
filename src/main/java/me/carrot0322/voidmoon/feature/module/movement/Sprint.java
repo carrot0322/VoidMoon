@@ -1,6 +1,7 @@
 package me.carrot0322.voidmoon.feature.module.movement;
 
 import me.carrot0322.voidmoon.feature.module.Module;
+import me.carrot0322.voidmoon.feature.module.client.ClickGui;
 import me.carrot0322.voidmoon.feature.setting.Setting;
 
 import static me.carrot0322.voidmoon.util.client.Util.mc;
@@ -15,6 +16,19 @@ public class Sprint extends Module {
 
     public Sprint() {
         super("Sprint", "", Category.MOVEMENT, true, false, false);
+        setInstance();
+    }
+
+    private static Sprint INSTANCE = new Sprint();
+
+    public static Sprint getInstance() {
+        if (INSTANCE == null)
+            INSTANCE = new Sprint();
+        return INSTANCE;
+    }
+
+    private void setInstance() {
+        INSTANCE = this;
     }
 
     @Override

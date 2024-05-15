@@ -11,6 +11,19 @@ public class SlimeFly extends Module {
 
     public SlimeFly() {
         super("SlimeFly", "", Module.Category.MOVEMENT, true, false, false);
+        setInstance();
+    }
+
+    private static SlimeFly INSTANCE = new SlimeFly();
+
+    public static SlimeFly getInstance() {
+        if (INSTANCE == null)
+            INSTANCE = new SlimeFly();
+        return INSTANCE;
+    }
+
+    private void setInstance() {
+        INSTANCE = this;
     }
 
     @Override

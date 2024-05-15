@@ -18,10 +18,10 @@ public class ClickGui extends Module {
     public Setting<Integer> green = register(new Setting<Integer>("Green", 70, 0, 255));
     public Setting<Integer> blue = register(new Setting<Integer>("Blue", 255, 0, 255));
     public Setting<Integer> hoverAlpha = register(new Setting<Integer>("Alpha", 200, 0, 255));
-    public Setting<Integer> topRed = register(new Setting<Integer>("SecondRed", 125, 0, 255));
-    public Setting<Integer> topGreen = register(new Setting<Integer>("SecondGreen", 68, 0, 255));
-    public Setting<Integer> topBlue = register(new Setting<Integer>("SecondBlue", 255, 0, 255));
-    public Setting<Integer> alpha = register(new Setting<Integer>("HoverAlpha", 240, 0, 255));
+    public Setting<Integer> topRed = register(new Setting<Integer>("Second Red", 125, 0, 255));
+    public Setting<Integer> topGreen = register(new Setting<Integer>("Second Green", 68, 0, 255));
+    public Setting<Integer> topBlue = register(new Setting<Integer>("Second Blue", 255, 0, 255));
+    public Setting<Integer> alpha = register(new Setting<Integer>("Hover Alpha", 240, 0, 255));
     public Setting<Boolean> rainbow = register(new Setting<Boolean>("Rainbow", false));
     public Setting<Integer> rainbowHue = register(new Setting<Object>("Delay", Integer.valueOf(240), Integer.valueOf(0), Integer.valueOf(600), v -> this.rainbow.getValue()));
     public Setting<Float> rainbowBrightness = register(new Setting<Object>("Brightness ", Float.valueOf(150.0f), Float.valueOf(1.0f), Float.valueOf(255.0f), v -> this.rainbow.getValue()));
