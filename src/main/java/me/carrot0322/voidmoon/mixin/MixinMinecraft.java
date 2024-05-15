@@ -1,7 +1,10 @@
 package me.carrot0322.voidmoon.mixin;
 
+import me.carrot0322.voidmoon.event.impl.KeyEvent;
 import me.carrot0322.voidmoon.event.impl.TickEvent;
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.common.MinecraftForge;
+import org.lwjgl.input.Keyboard;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -19,5 +22,15 @@ public class MixinMinecraft {
     @Inject(at = @At("TAIL"), method = "runTick")
     private void onTick(CallbackInfo info) {
         EVENT_BUS.post(TickEvent.Post.get());
+    }
+
+    @Inject(method = {"dispatchKeypresses"}, at = {@At(value = "INVOKE", remap = false, target = "Lorg/lwjgl/input/Keyboard;getEventKey()I", ordinal = 0, shift = At.Shift.BEFORE)})
+    private void onKeyboard(CallbackInfo callbackInfo) {
+        int i;
+        int n = i = Keyboard.getEventKey() == 0 ? Keyboard.getEventCharacter() + 256 : Keyboard.getEventKey();
+        if (Keyboard.getEventKeyState()) {
+            KeyEvent event = new KeyEvent(i);
+            EVENT_BUS.post(event);
+        }
     }
 }

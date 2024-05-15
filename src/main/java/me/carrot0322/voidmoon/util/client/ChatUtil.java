@@ -1,7 +1,9 @@
 package me.carrot0322.voidmoon.util.client;
 
+import com.google.gson.JsonObject;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import me.carrot0322.voidmoon.VoidMoon;
+import net.minecraft.util.IChatComponent;
 
 import static me.carrot0322.voidmoon.feature.Feature.nullCheck;
 import static me.carrot0322.voidmoon.util.client.Util.mc;
@@ -31,10 +33,12 @@ public class ChatUtil {
     }
 
     public static void sendSilentMessage(String message) {
-        if (nullCheck()) {
+        if (nullCheck())
             return;
-        }
 
-        mc.thePlayer.sendChatMessage(message);
+        final JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("text", message);
+
+        mc.thePlayer.addChatMessage(IChatComponent.Serializer.jsonToComponent(jsonObject.toString()));
     }
 }

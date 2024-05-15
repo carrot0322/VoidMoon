@@ -2,12 +2,15 @@ package me.carrot0322.voidmoon.manager;
 
 import com.google.common.eventbus.Subscribe;
 import me.carrot0322.voidmoon.VoidMoon;
-import me.carrot0322.voidmoon.event.Stage;
 import me.carrot0322.voidmoon.event.impl.*;
 import me.carrot0322.voidmoon.feature.Feature;
+import me.carrot0322.voidmoon.feature.command.Command;
+import me.carrot0322.voidmoon.util.client.ChatUtil;
 import me.carrot0322.voidmoon.util.client.Timer;
+import org.lwjgl.input.Keyboard;
 
 import static me.carrot0322.voidmoon.util.client.Util.EVENT_BUS;
+import static me.carrot0322.voidmoon.util.client.Util.mc;
 
 public class EventManager extends Feature {
     private final Timer logoutTimer = new Timer();
@@ -33,6 +36,30 @@ public class EventManager extends Feature {
         if (fullNullCheck())
             return;
         VoidMoon.moduleManager.onTick();
+    }
+
+    @Subscribe
+    public void onKeyInput(KeyEvent event) {
+        if (Keyboard.getEventKeyState())
+            VoidMoon.moduleManager.onKeyPressed(event.getKey());
+    }
+
+    @Subscribe
+    public void onChatSent(ChatEvent event) {
+        if (event.getMsg().startsWith(Command.getCommandPrefix())) {
+            event.cancel();
+            try {
+                mc.ingameGUI.getChatGUI().addToSentMessages(event.getMsg());
+                if (event.getMsg().length() > 1) {
+                    VoidMoon.commandManager.executeCommand(event.getMsg().substring(Command.getCommandPrefix().length() - 1));
+                } else {
+                    ChatUtil.sendInfo("Please enter a command.");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                ChatUtil.sendError("An error occurred while running this command. Check the log!");
+            }
+        }
     }
 
     /*
