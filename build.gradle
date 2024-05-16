@@ -65,6 +65,8 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
+
+    rename "(.+_at.cfg)", "META-INF/\$1"
 }
 
 sourceSets {
@@ -85,6 +87,9 @@ jar {
             'FMLCorePluginContainsFMLMod': 'true',
             'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
             'TweakOrder': '0',
-            'MixinConfigs': mod_mixin_configs.replace('${mod_id}', mod_id)
+            'MixinConfigs': mod_mixin_configs.replace('${mod_id}', mod_id),
+            "FMLAT": "minusbounce_at.cfg",
     )
+
+    enabled = true
 }
