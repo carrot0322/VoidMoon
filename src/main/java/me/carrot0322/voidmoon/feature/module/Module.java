@@ -108,9 +108,7 @@ public class Module extends Feature {
         if (Notification.getInstance().toggleNotify.getValue())
             ChatUtil.sendToggle(true, this.getDisplayName());
 
-        ResourceLocation soundLocation = new ResourceLocation("minecraft", "block.stone.break");
-        mc.getSoundHandler().playSound(new PositionedSoundRecord(soundLocation, 1.0f, 1.0f, (float) mc.thePlayer.posX, (float) mc.thePlayer.posY, (float) mc.thePlayer.posZ));
-
+        VoidMoon.soundManager.enableSound.asyncPlay();
         if (this.isOn() && this.hasListener && !this.alwaysListening) {
             EVENT_BUS.register(this);
         }
@@ -125,9 +123,7 @@ public class Module extends Feature {
         if (Notification.getInstance().toggleNotify.getValue())
             ChatUtil.sendToggle(false, this.getDisplayName());
 
-        ResourceLocation soundLocation = new ResourceLocation("minecraft", "block.stone.break");
-        mc.getSoundHandler().playSound(new PositionedSoundRecord(soundLocation, 1.0f, 1.0f, (float) mc.thePlayer.posX, (float) mc.thePlayer.posY, (float) mc.thePlayer.posZ));
-
+        VoidMoon.soundManager.disableSound.asyncPlay();
         this.onToggle();
         this.onDisable();
     }

@@ -9,7 +9,7 @@
   "updateUrl": "",
   "authorList": ["c_arrot_"],
   "credits": "",
-  "logoFile": "assets/voidmoon/logo.png",
+  "logoFile": "assets/minecraft/voidmoon/textures/voidmoon.png",
   "screenshots": [],
   "dependencies": []
 }

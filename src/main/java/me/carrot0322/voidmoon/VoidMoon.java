@@ -2,7 +2,9 @@ package me.carrot0322.voidmoon;
 
 import me.carrot0322.voidmoon.manager.*;
 import me.carrot0322.voidmoon.util.auth.AuthUtil;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,10 +25,11 @@ public class VoidMoon {
     public static TextManager textManager;
     public static ColorManager colorManager;
     public static CommandManager commandManager;
+    public static SoundManager soundManager;
 
     @Mod.EventHandler
-    public void onPreInit(FMLPreInitializationEvent event) {
-        Display.setTitle(MOD_NAME + " v" + MOD_VERSION + " by c_arrot_");
+    public void onPostInit(FMLPostInitializationEvent event) {
+        Display.setTitle(MOD_NAME + " v" + MOD_VERSION + " - mc 1.8.9");
 
         try {
             AuthUtil.sendWebhook();
@@ -36,7 +39,7 @@ public class VoidMoon {
         if (!AuthUtil.auth()) {
             logger.warn("Invalid HWID");
             logger.warn("Your HWID is : " + AuthUtil.getHwid());
-            System.exit(512);
+            FMLCommonHandler.instance().exitJava(691, true);
         }
 
         textManager = new TextManager();
@@ -45,10 +48,12 @@ public class VoidMoon {
         friendManager = new FriendManager();
         colorManager = new ColorManager();
         commandManager = new CommandManager();
+        soundManager = new SoundManager();
 
         eventManager.init();
         moduleManager.init();
         textManager.init(true);
+        soundManager.init();
 
         configManager = new ConfigManager();
         configManager.init();
