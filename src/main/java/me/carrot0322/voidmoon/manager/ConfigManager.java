@@ -47,7 +47,7 @@ public class ConfigManager {
                 setting.setValue(str.replace("_", " "));
                 return;
             case "Bind":
-                setting.setValue((new Bind.BindConverter()).doBackward(element));
+                setting.setValue(new Bind(element.getAsInt()));
                 return;
             case "Enum":
                 try {
