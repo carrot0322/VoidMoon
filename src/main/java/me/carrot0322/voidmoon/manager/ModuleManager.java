@@ -1,6 +1,8 @@
 package me.carrot0322.voidmoon.manager;
 
 import com.google.common.eventbus.EventBus;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import me.carrot0322.voidmoon.event.impl.Render2DEvent;
 import me.carrot0322.voidmoon.event.impl.Render3DEvent;
 import me.carrot0322.voidmoon.feature.Feature;
@@ -15,6 +17,7 @@ import me.carrot0322.voidmoon.feature.module.exploit.Plugin;
 import me.carrot0322.voidmoon.feature.module.movement.Flight;
 import me.carrot0322.voidmoon.feature.module.movement.SlimeFly;
 import me.carrot0322.voidmoon.feature.module.movement.Sprint;
+import me.carrot0322.voidmoon.util.client.Jsonable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,7 +31,7 @@ import java.util.stream.Collectors;
 import static me.carrot0322.voidmoon.util.client.Util.EVENT_BUS;
 import static me.carrot0322.voidmoon.util.client.Util.mc;
 
-public class ModuleManager extends Feature {
+public class ModuleManager extends Feature implements Jsonable {
     public ArrayList<Module> modules = new ArrayList();
     public List<Module> sortedModules = new ArrayList<Module>();
     public List<String> sortedModulesABC = new ArrayList<String>();
@@ -279,5 +282,23 @@ public class ModuleManager extends Feature {
             System.out.println("Starting animation thread.");
             this.service.scheduleAtFixedRate(this, 0L, 1L, TimeUnit.MILLISECONDS);
         }
+    }
+
+    @Override public JsonElement toJson() {
+        JsonObject object = new JsonObject();
+        for (Module module : modules) {
+            object.add(module.getName(), module.toJson());
+        }
+        return object;
+    }
+
+    @Override public void fromJson(JsonElement element) {
+        for (Module module : modules) {
+            module.fromJson(element.getAsJsonObject().get(module.getName()));
+        }
+    }
+
+    @Override public String getFileName() {
+        return "modules.void";
     }
 }

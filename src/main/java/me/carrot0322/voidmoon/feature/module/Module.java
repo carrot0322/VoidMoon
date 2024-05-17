@@ -1,5 +1,7 @@
 package me.carrot0322.voidmoon.feature.module;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import me.carrot0322.voidmoon.VoidMoon;
 import me.carrot0322.voidmoon.event.impl.ClientEvent;
@@ -9,17 +11,15 @@ import me.carrot0322.voidmoon.feature.Feature;
 import me.carrot0322.voidmoon.feature.module.client.Notification;
 import me.carrot0322.voidmoon.feature.setting.Bind;
 import me.carrot0322.voidmoon.feature.setting.Setting;
+import me.carrot0322.voidmoon.manager.ConfigManager;
 import me.carrot0322.voidmoon.util.client.ChatUtil;
-import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.util.ResourceLocation;
+import me.carrot0322.voidmoon.util.client.Jsonable;
 
 import java.util.Objects;
 
 import static me.carrot0322.voidmoon.util.client.Util.EVENT_BUS;
-import static me.carrot0322.voidmoon.util.client.Util.mc;
 
-public class Module extends Feature {
+public class Module extends Feature implements Jsonable {
     private final String description;
     private final Category category;
     public Setting<Boolean> enabled = this.register(new Setting<Boolean>("Enabled", false));
@@ -214,6 +214,34 @@ public class Module extends Feature {
 
         public String getName() {
             return this.name;
+        }
+    }
+
+    @Override public JsonElement toJson() {
+        JsonObject object = new JsonObject();
+        for (Setting<?> setting : getSettings()) {
+            try {
+                if (setting.getValue() instanceof Bind) {
+                    Bind bind = (Bind) setting.getValue();
+                    object.addProperty(setting.getName(), bind.getKey());
+                } else {
+                    object.addProperty(setting.getName(), setting.getValueAsString());
+                }
+            } catch (Throwable e) {
+            }
+        }
+        return object;
+    }
+
+    @Override public void fromJson(JsonElement element) {
+        JsonObject object = element.getAsJsonObject();
+        String enabled = object.get("Enabled").getAsString();
+        if (Boolean.parseBoolean(enabled)) toggle();
+        for (Setting<?> setting : getSettings()) {
+            try {
+                ConfigManager.setValueFromJson(this, setting, object.get(setting.getName()));
+            } catch (Throwable throwable) {
+            }
         }
     }
 }

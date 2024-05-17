@@ -57,10 +57,10 @@ public class VoidMoon {
         colorManager.init();
 
         configManager = new ConfigManager();
-        configManager.init();
+        configManager.load();
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            configManager.saveConfig(configManager.loadCurrentConfig());
+            configManager.save();
         }));
     }
 }

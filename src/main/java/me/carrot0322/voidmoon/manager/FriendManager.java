@@ -1,98 +1,64 @@
 package me.carrot0322.voidmoon.manager;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import me.carrot0322.voidmoon.feature.Feature;
-import me.carrot0322.voidmoon.feature.setting.Setting;
-import me.carrot0322.voidmoon.util.player.PlayerUtil;
+import me.carrot0322.voidmoon.util.client.Jsonable;
 import net.minecraft.entity.player.EntityPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
 
-public class FriendManager extends Feature {
-    private List<Friend> friends = new ArrayList<Friend>();
-
+public class FriendManager extends Feature implements Jsonable {
     public FriendManager() {
         super("Friends");
     }
 
+    private final List<String> friends = new ArrayList<>();
+
     public boolean isFriend(String name) {
-        this.cleanFriends();
-        return this.friends.stream().anyMatch(friend -> friend.username.equalsIgnoreCase(name));
+        return this.friends.stream().anyMatch(friend -> friend.equalsIgnoreCase(name));
     }
 
     public boolean isFriend(EntityPlayer player) {
-        return this.isFriend(player.getName());
+        return this.isFriend(player.getGameProfile().getName());
     }
 
     public void addFriend(String name) {
-        Friend friend = this.getFriendByName(name);
-        if (friend != null) {
-            this.friends.add(friend);
-        }
-        this.cleanFriends();
+        this.friends.add(name);
     }
 
     public void removeFriend(String name) {
-        this.cleanFriends();
-        for (Friend friend : this.friends) {
-            if (!friend.getUsername().equalsIgnoreCase(name)) continue;
-            this.friends.remove(friend);
-            break;
-        }
+        friends.removeIf(s -> s.equalsIgnoreCase(name));
     }
 
-    public void onLoad() {
-        this.friends = new ArrayList<Friend>();
-        this.clearSettings();
-    }
-
-    public void saveFriends() {
-        this.clearSettings();
-        this.cleanFriends();
-        for (Friend friend : this.friends) {
-            this.register(new Setting<String>(friend.getUuid().toString(), friend.getUsername()));
-        }
-    }
-
-    public void cleanFriends() {
-        this.friends.stream().filter(Objects::nonNull).filter(friend -> friend.getUsername() != null);
-    }
-
-    public List<Friend> getFriends() {
-        this.cleanFriends();
+    public List<String> getFriends() {
         return this.friends;
     }
 
-    public Friend getFriendByName(String input) {
-        UUID uuid = PlayerUtil.getUUIDFromName(input);
-        if (uuid != null) {
-            Friend friend = new Friend(input, uuid);
-            return friend;
-        }
-        return null;
+    public boolean shouldAttack(EntityPlayer player) {
+        return !isFriend(player);
     }
 
-    public void addFriend(Friend friend) {
-        this.friends.add(friend);
+    @Override public JsonElement toJson() {
+        JsonObject object = new JsonObject();
+        JsonArray array = new JsonArray();
+        for (String friend : friends) {
+            array.add(new JsonPrimitive(friend));
+        }
+        object.add("friends", array);
+        return object;
     }
 
-    public static class Friend {
-        private final String username;
-        private final UUID uuid;
-
-        public Friend(String username, UUID uuid) {
-            this.username = username;
-            this.uuid = uuid;
+    @Override public void fromJson(JsonElement element) {
+        for (JsonElement e : element.getAsJsonObject().get("friends").getAsJsonArray()) {
+            friends.add(e.getAsString());
         }
+    }
 
-        public String getUsername() {
-            return this.username;
-        }
-
-        public UUID getUuid() {
-            return this.uuid;
-        }
+    @Override public String getFileName() {
+        return "friends.json";
     }
 }
