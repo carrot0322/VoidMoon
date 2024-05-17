@@ -8,6 +8,7 @@
   "client": [
     "MixinEntityPlayerSP",
     "MixinEntityRenderer",
+    "MixinGuiScreen",
     "MixinGuiSpectator",
     "MixinMinecraft"
   ],
