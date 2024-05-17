@@ -14,6 +14,8 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ResourceLocation;
 
+import java.util.Objects;
+
 import static me.carrot0322.voidmoon.util.client.Util.EVENT_BUS;
 import static me.carrot0322.voidmoon.util.client.Util.mc;
 
@@ -105,13 +107,17 @@ public class Module extends Feature {
         this.onToggle();
         this.onEnable();
 
-        if (Notification.getInstance().toggleNotify.getValue())
-            ChatUtil.sendToggle(true, this.getDisplayName());
-
-        VoidMoon.soundManager.enableSound.asyncPlay();
         if (this.isOn() && this.hasListener && !this.alwaysListening) {
             EVENT_BUS.register(this);
         }
+
+        if(Objects.equals(this.getName(), "ClickGui"))
+            return;
+
+        if (Notification.getInstance().toggleNotify.getValue())
+            ChatUtil.sendToggle(true, this.getDisplayName());
+        if(Notification.getInstance().toggleSound.getValue())
+            VoidMoon.soundManager.enableSound.asyncPlay(Notification.getInstance().toggleVolume.getValue());
     }
 
     public void disable() {
@@ -120,12 +126,16 @@ public class Module extends Feature {
         }
         this.enabled.setValue(false);
 
-        if (Notification.getInstance().toggleNotify.getValue())
-            ChatUtil.sendToggle(false, this.getDisplayName());
-
-        VoidMoon.soundManager.disableSound.asyncPlay();
         this.onToggle();
         this.onDisable();
+
+        if(Objects.equals(this.getName(), "ClickGui"))
+            return;
+
+        if (Notification.getInstance().toggleNotify.getValue())
+            ChatUtil.sendToggle(false, this.getDisplayName());
+        if(Notification.getInstance().toggleSound.getValue())
+            VoidMoon.soundManager.disableSound.asyncPlay(Notification.getInstance().toggleVolume.getValue());
     }
 
     public void toggle() {

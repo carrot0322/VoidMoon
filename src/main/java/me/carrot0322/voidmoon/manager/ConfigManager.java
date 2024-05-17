@@ -117,7 +117,8 @@ public class ConfigManager {
         if (!PATH.toFile().exists()) PATH.toFile().mkdirs();
 
         // disable some modules
-        ClickGui.getInstance().disable();
+        if(ClickGui.getInstance().isEnabled())
+            ClickGui.getInstance().disable();
 
         this.config = "VoidMoon/" + name + "/";
         File path = new File(this.config);
