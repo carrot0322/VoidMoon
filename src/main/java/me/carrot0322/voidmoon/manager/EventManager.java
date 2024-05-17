@@ -44,24 +44,6 @@ public class EventManager extends Feature {
             VoidMoon.moduleManager.onKeyPressed(event.getKey());
     }
 
-    @Subscribe
-    public void onChatSent(ChatEvent event) {
-        if (event.getMsg().startsWith(Command.getCommandPrefix())) {
-            event.setCancel(true);
-            try {
-                mc.ingameGUI.getChatGUI().addToSentMessages(event.getMsg());
-                if (event.getMsg().length() > 1) {
-                    VoidMoon.commandManager.executeCommand(event.getMsg().substring(Command.getCommandPrefix().length() - 1));
-                } else {
-                    ChatUtil.sendInfo("Please enter a command.");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                ChatUtil.sendError("An error occurred while running this command. Check the log!");
-            }
-        }
-    }
-
     /*
     @Subscribe
     public void onUpdateWalkingPlayer(UpdateWalkingPlayerEvent event) {

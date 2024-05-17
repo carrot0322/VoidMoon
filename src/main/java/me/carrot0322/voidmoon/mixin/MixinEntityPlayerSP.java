@@ -1,11 +1,13 @@
 package me.carrot0322.voidmoon.mixin;
 
+import me.carrot0322.voidmoon.VoidMoon;
 import me.carrot0322.voidmoon.event.impl.ChatEvent;
 import me.carrot0322.voidmoon.event.impl.MotionEvent;
 import me.carrot0322.voidmoon.event.impl.UpdateEvent;
+import me.carrot0322.voidmoon.feature.command.Command;
+import me.carrot0322.voidmoon.util.client.ChatUtil;
 import net.minecraft.client.entity.EntityPlayerSP;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -20,10 +22,31 @@ public class MixinEntityPlayerSP {
         EVENT_BUS.post(new UpdateEvent());
     }
 
-    @Inject(method = "sendChatMessage", at = {@At(value = "HEAD")}, cancellable = true)
-    public void sendChatMessage(String message, CallbackInfo callback) {
-        ChatEvent chatEvent = new ChatEvent(message);
-        EVENT_BUS.post(chatEvent);
+    @Inject(method = "sendChatMessage", at = @At("HEAD"), cancellable = true)
+    private void sendChatMessageHook(String content, CallbackInfo ci) {
+        ChatEvent event = new ChatEvent(content);
+        EVENT_BUS.post(event);
+        if (event.isCancelled()) ci.cancel();
+    }
+
+    @Inject(method = "sendChatMessage", at = @At("HEAD"), cancellable = true)
+    private void onSendChatMessage(String message, CallbackInfo ci) {
+        if(message.equals(".")){
+            ChatUtil.sendInfo("Sent . ¯\\_(ツ)_/¯");
+        } else if (message.startsWith(VoidMoon.commandManager.getPrefix())) {
+            try {
+                if (message.length() > 1) {
+                    VoidMoon.commandManager.executeCommand(message.substring(Command.getCommandPrefix().length() - 1));
+                } else {
+                    ChatUtil.sendInfo("Please enter a command.");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                ChatUtil.sendError("An error occurred while running this command. Check the log!");
+            }
+
+            ci.cancel();
+        }
     }
 
     @Inject(method = "onUpdateWalkingPlayer", at = @At("HEAD"))
