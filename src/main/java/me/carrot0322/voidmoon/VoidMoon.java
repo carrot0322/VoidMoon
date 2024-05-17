@@ -54,6 +54,7 @@ public class VoidMoon {
         moduleManager.init();
         textManager.init(true);
         soundManager.init();
+        colorManager.init();
 
         configManager = new ConfigManager();
         configManager.init();
