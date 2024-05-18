@@ -8,15 +8,10 @@ import me.carrot0322.voidmoon.event.impl.Render3DEvent;
 import me.carrot0322.voidmoon.feature.Feature;
 import me.carrot0322.voidmoon.feature.gui.VoidMoonGui;
 import me.carrot0322.voidmoon.feature.module.Module;
-import me.carrot0322.voidmoon.feature.module.client.ClickGui;
-import me.carrot0322.voidmoon.feature.module.client.FontMod;
-import me.carrot0322.voidmoon.feature.module.client.Hud;
-import me.carrot0322.voidmoon.feature.module.client.Notification;
-import me.carrot0322.voidmoon.feature.module.exploit.Disabler;
-import me.carrot0322.voidmoon.feature.module.exploit.Plugin;
-import me.carrot0322.voidmoon.feature.module.movement.Flight;
-import me.carrot0322.voidmoon.feature.module.movement.SlimeFly;
-import me.carrot0322.voidmoon.feature.module.movement.Sprint;
+import me.carrot0322.voidmoon.feature.module.client.*;
+import me.carrot0322.voidmoon.feature.module.exploit.*;
+import me.carrot0322.voidmoon.feature.module.misc.*;
+import me.carrot0322.voidmoon.feature.module.movement.*;
 import me.carrot0322.voidmoon.util.client.Jsonable;
 
 import java.util.ArrayList;
@@ -50,6 +45,7 @@ public class ModuleManager extends Feature implements Jsonable {
         // Render
 
         // Misc
+        modules.add(new FastUse());
 
         // Exploit
         modules.add(new Disabler());

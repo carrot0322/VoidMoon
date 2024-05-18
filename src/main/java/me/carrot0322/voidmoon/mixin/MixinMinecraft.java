@@ -3,9 +3,11 @@ package me.carrot0322.voidmoon.mixin;
 import me.carrot0322.voidmoon.event.impl.KeyEvent;
 import me.carrot0322.voidmoon.event.impl.TickEvent;
 import me.carrot0322.voidmoon.feature.gui.VoidMoonGui;
+import me.carrot0322.voidmoon.feature.module.misc.FastUse;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Keyboard;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -15,6 +17,9 @@ import static me.carrot0322.voidmoon.util.client.Util.mc;
 
 @Mixin(Minecraft.class)
 public class MixinMinecraft {
+    @Shadow
+    public int rightClickDelayTimer;
+
     @Inject(at = @At("HEAD"), method = "runTick")
     private void onPreTick(CallbackInfo info) {
         EVENT_BUS.post(TickEvent.Pre.get());
@@ -39,5 +44,11 @@ public class MixinMinecraft {
             KeyEvent event = new KeyEvent(i);
             EVENT_BUS.post(event);
         }
+    }
+
+    @Inject(method = "rightClickMouse", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;rightClickDelayTimer:I", shift = At.Shift.AFTER))
+    private void rightClickMouse(final CallbackInfo callbackInfo) {
+        if(FastUse.getInstance().isEnabled())
+            rightClickDelayTimer = FastUse.getInstance().speed.getValue();
     }
 }
