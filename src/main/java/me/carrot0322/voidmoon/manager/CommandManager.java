@@ -16,7 +16,6 @@ public class CommandManager extends Feature {
     public CommandManager() {
         super("Command");
         commands.add(new BindCommand());
-        commands.add(new HelpCommand());
     }
 
     public static String[] removeElement(String[] input, int indexToDelete) {
