@@ -2,7 +2,7 @@ package me.carrot0322.voidmoon.manager;
 
 import me.carrot0322.voidmoon.feature.Feature;
 import me.carrot0322.voidmoon.feature.command.Command;
-import me.carrot0322.voidmoon.feature.command.impl.BindCommand;
+import me.carrot0322.voidmoon.feature.command.impl.*;
 import me.carrot0322.voidmoon.util.client.ChatUtil;
 
 import java.util.ArrayList;
@@ -15,7 +15,8 @@ public class CommandManager extends Feature {
 
     public CommandManager() {
         super("Command");
-        this.commands.add(new BindCommand());
+        commands.add(new BindCommand());
+        commands.add(new HelpCommand());
     }
 
     public static String[] removeElement(String[] input, int indexToDelete) {
